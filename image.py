@@ -39,5 +39,5 @@ class image:
         if (filter_name == "NEG"):
             new_arr = filter.NEG_filter()
         if (filter_name == "FUR"):
-            new_arr = filter.FUR_filter()
+            new_arr = filter.FUR_unfilter()
         return self.array_to_image(new_arr)
