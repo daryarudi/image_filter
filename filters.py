@@ -1,6 +1,6 @@
 import math
 import cmath
-import numpy
+import numpy as np
 
 
 class filters:
@@ -26,43 +26,104 @@ class filters:
                 arr[i][j][2] = 255 - arr[i][j][2]
         return arr
 
-    def FUR_filter(self):
-        #arr = self.BW_filter().copy()
-        arr = []
-        j = complex(0, 1)
-        for i1 in range(0, len(self.array)):
-            row = []
-            for j1 in range(0, len(self.array[i1])):
-                tmp = 0.0
-                for i2 in range(0, len(arr)):
-                    for j2 in range(0, len(arr[0])):
-                        tmp = tmp + (self.array[i2][j2][0] * cmath.exp(-2 * cmath.pi * j * ((i1 * i2 / len(arr)) + (j1 * j2 / len(arr[0])))))
-                tmp = tmp / (len(self.array) * len(self.array[0]))
-                row.append(tmp)
-            arr.append(row)
-        res = self.array.copy()
-        for i in range(0, len(res)):
-            for j in range(0, len(res[i])):
-                res[i][j][0] = int(math.sqrt(arr[i][j].real*arr[i][j].real+arr[i][j].imag*arr[i][j].imag))
-                res[i][j][1] = res[i][j][0]
-                res[i][j][2] = res[i][j][0]
-
-        #                arr[i1][j1][0] = tmp   #int(math.sqrt(tmp.real*tmp.real+tmp.imag*tmp.imag))
-#                arr[i1][j1][1] = arr[i1][j1][0]
-#                arr[i1][j1][2] = arr[i1][j1][0]
-        return arr
-
-    def FUR_unfilter(self):
+    def IDL_filter(self, w, d0):
         arr = self.FUR_filter()
-        res = self.array.copy()
-        j = complex(0, 1)
-        for i1 in range(0, len(arr)):
-            for j1 in range(0, len(arr[i1])):
+        arr_new = arr.copy()
+        matrix = []
+        for i in range(0, len(arr)):
+            row = []
+            for j in range(0, len(arr[0])):
+                tmp = math.sqrt((i - len(arr) / 2) ** 2 + (j - len(arr[0]) / 2) ** 2)
+                if (tmp < d0) or (tmp > (d0 + w)):
+                    row.append(1)
+                else:
+                    row.append(0)
+            matrix.append(row)
+        for i in range(0, len(arr)):
+            for j in range(0, len(arr[0])):
+                arr_new[i][j] = arr[i][j] * matrix[i][j]
+        return self.FUR_unfilter(arr_new)
+
+    def shift(self, arr):
+        arr_new = []
+        for i in range(0, len(arr)):
+            row = []
+            for j in range(0, len(arr[0])):
+                row.append(arr[i][j] * ((-1) ** (i + j)))
+            arr_new.append(row)
+        return arr_new
+
+    def pix_to_float(self, arr):
+        arr_new = []
+        for i in range(0, len(arr)):
+            row = []
+            for j in range(0, len(arr[0])):
+                row.append(float(self.array[i][j][0]))
+            arr_new.append(row)
+        return arr_new
+
+    def float_to_pix(self, arr):
+        arr_new = self.array.copy()
+        for i in range(0, len(arr)):
+            for j in range(0, len(arr[0])):
+                value = int(math.sqrt(arr[i][j].real**2+arr[i][j].imag**2))#int(arr[i][j].real)#
+                if (value > 255):
+                    value = 255
+                arr_new[i][j][0] = value
+                arr_new[i][j][1] = arr_new[i][j][0]
+                arr_new[i][j][2] = arr_new[i][j][0]
+        return arr_new
+
+    def FUR_filter(self):
+        self.array = self.BW_filter()
+        n = len(self.array)
+        m = len(self.array[0])
+
+        arr0 = self.pix_to_float(self.array)
+        arr0 = self.shift(arr0)
+
+        arr1 = []
+        for i in range(0, n):
+            arr1.append([])
+        for i in range(0, n):
+            for j in range(0, m):
                 tmp = 0.0
-                for i2 in range(0, len(arr)):
-                    for j2 in range(0, len(arr[0])):
-                        tmp = tmp + (arr[i2][j2] * cmath.exp(2 * cmath.pi * j * ((i1 * i2 / len(arr)) + (j1 * j2 / len(arr[0])))))
-                res[i1][j1][0] = int(math.sqrt(tmp.real*tmp.real+tmp.imag*tmp.imag))
-                res[i1][j1][1] = res[i1][j1][0]
-                res[i1][j1][2] = res[i1][j1][0]
+                for k in range(0, m):
+                    tmp = tmp + arr0[i][k] * (math.cos((2 * math.pi * j * k) / m) + 1j * math.sin((2 * math.pi * j * k) / m))
+                arr1[i].append(tmp)
+        arr2 = []
+        for i in range(0, n):
+            arr2.append([])
+        for i in range(0, m):
+            for j in range(0, n):
+                tmp = 0.0
+                for k in range(0, n):
+                    tmp = tmp + arr1[k][i] * (math.cos((2 * math.pi * j * k) / m) + 1j * math.sin((2 * math.pi * j * k) / m))
+                arr2[j].append(tmp)
+#        res = self.float_to_pix(arr2)
+        return arr2
+
+    def FUR_unfilter(self, arr0):
+        n = len(arr0)
+        m = len(arr0[0])
+        arr1 = []
+        for i in range(0, n):
+                arr1.append([])
+        for i in range(0, n):
+            for j in range(0, m):
+                tmp = 0.0
+                for k in range(0, m):
+                    tmp = tmp + arr0[i][k] * (math.cos((2 * math.pi * j * k) / m) - 1j * math.sin((2 * math.pi * j * k) / m))
+                arr1[i].append(tmp/m)
+        arr2 = []
+        for i in range(0, n):
+            arr2.append([])
+        for i in range(0, m):
+            for j in range(0, n):
+                tmp = 0.0
+                for k in range(0, n):
+                    tmp = tmp + arr1[k][i] * (math.cos((2 * math.pi * j * k) / m) - 1j * math.sin((2 * math.pi * j * k) / m))
+                arr2[j].append(tmp/n)
+        arr2 = self.shift(arr2)
+        res = self.float_to_pix(arr2)
         return res

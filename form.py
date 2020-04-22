@@ -26,16 +26,16 @@ class Ui_MainWindow(object):
         self.centralwidget = QWidget(MainWindow)
 
         self.b_open = QPushButton(self.centralwidget)
-        self.b_open.setGeometry(QRect(10, 10, 150, 30))
+        self.b_open.setGeometry(QRect(10, 10, 200, 30))
         self.b_open.setText("Открыть изображение")
 
         self.cb_filter = QComboBox(self.centralwidget)
-        self.cb_filter.setGeometry(QRect(form_width - 320, 11, 150, 28))
+        self.cb_filter.setGeometry(QRect(form_width - 350, 11, 150, 28))
         for i in range(len(variables.FILTERS)):
             self.cb_filter.addItem(variables.FILTERS[i].name)
 
         self.b_filter = QPushButton(self.centralwidget)
-        self.b_filter.setGeometry(QRect(form_width - 160, 10, 150, 30))
+        self.b_filter.setGeometry(QRect(form_width - 190, 10, 180, 30))
         self.b_filter.setText("Применить фильтр")
 
         # test

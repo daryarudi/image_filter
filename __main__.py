@@ -23,8 +23,8 @@ class main:
             im2 = self.im.filter("BW")
         if (self.ui.cb_filter.currentText() == "Негатив"):
             im2 = self.im.filter("NEG")
-        if (self.ui.cb_filter.currentText() == "Фурье"):
-            im2 = self.im.filter("FUR")
+        if (self.ui.cb_filter.currentText() == "Идеальный режекторный фильтр"):
+            im2 = self.im.filter("IDL")
         self.output_image(im2, 2)
 
     def output_image(self, im, num):

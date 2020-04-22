@@ -38,6 +38,6 @@ class image:
             new_arr = filter.BW_filter()
         if (filter_name == "NEG"):
             new_arr = filter.NEG_filter()
-        if (filter_name == "FUR"):
-            new_arr = filter.FUR_unfilter()
+        if (filter_name == "IDL"):
+            new_arr = filter.IDL_filter(d0=30, w=11)
         return self.array_to_image(new_arr)

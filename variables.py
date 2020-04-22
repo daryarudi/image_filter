@@ -11,6 +11,7 @@ class variables:
             self.name = name
 
     FILTERS = []
+    FILTERS.append(FILTER("IDL", "Идеальный режекторный фильтр"))
+#    FILTERS.append(FILTER("FUR", "Фурье"))
     FILTERS.append(FILTER("BW","Черно-белый"))
     FILTERS.append(FILTER("NEG","Негатив"))
-    FILTERS.append(FILTER("FUR", "Фурье"))
