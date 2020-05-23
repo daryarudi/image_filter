@@ -8,25 +8,6 @@ class filters:
         self.array = array
         self.fur_arr = self.fur()
 
-    def BW_filter(self):
-        arr = self.array.copy()
-        for i in range(len(arr)):
-            for j in range(len(arr[i])):
-                gray = 0.3 * arr[i][j][0] + 0.59 * arr[i][j][1] + 0.11 * arr[i][j][2]
-                arr[i][j][0] = gray
-                arr[i][j][1] = gray
-                arr[i][j][2] = gray
-        return arr
-
-    def NEG_filter(self):
-        arr = self.array.copy()
-        for i in range(len(arr)):
-            for j in range(len(arr[i])):
-                arr[i][j][0] = 255 - arr[i][j][0]
-                arr[i][j][1] = 255 - arr[i][j][1]
-                arr[i][j][2] = 255 - arr[i][j][2]
-        return arr
-
 # идеальный фильтр низкочастотный
     def INF_filter(self, w, d0):
         matrix = []

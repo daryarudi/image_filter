@@ -5,7 +5,7 @@ import sys
 from variables import variables
 
 class main:
-    def __init__(self): # костыли ебаные!!!!! надо упрстить
+    def __init__(self):
         self.im = None
         self.app = QApplication(sys.argv)
         self.Form = QWidget()
