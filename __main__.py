@@ -2,6 +2,7 @@ from image import image
 from PySide2.QtWidgets import *
 from form import Ui_MainWindow
 import sys
+from variables import variables
 
 class main:
     def __init__(self): # костыли ебаные!!!!! надо упрстить
@@ -12,6 +13,7 @@ class main:
         self.ui.setupUi(self.Form)
         self.ui.b_open.clicked.connect(self.b_open_clicked)
         self.ui.b_filter.clicked.connect(self.b_filter_clicked)
+        self.v = variables()
 
     def b_open_clicked(self):
         filename = QFileDialog.getOpenFileName(caption="Открыть изображение", filter="Файлы изображений (*.jpg)")
@@ -19,12 +21,7 @@ class main:
         self.output_image(self.im, 1)
 
     def b_filter_clicked(self):
-        if (self.ui.cb_filter.currentText() == "Черно-белый"):
-            im2 = self.im.filter("BW")
-        if (self.ui.cb_filter.currentText() == "Негатив"):
-            im2 = self.im.filter("NEG")
-        if (self.ui.cb_filter.currentText() == "Идеальный режекторный фильтр"):
-            im2 = self.im.filter("IDL")
+        im2 = self.im.filter(self.v.get_filter_code(name = self.ui.cb_filter.currentText()))
         self.output_image(im2, 2)
 
     def output_image(self, im, num):
@@ -32,8 +29,6 @@ class main:
             self.ui.label1.setPixmap(im.to_qpixmap())
         if (num == 2):
             self.ui.label2.setPixmap(im.to_qpixmap())
-        if (num == 3):
-            self.ui.label3.setPixmap(im.to_qpixmap())
 
     def main(self):
         self.Form.show()

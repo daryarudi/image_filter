@@ -18,7 +18,7 @@ class Ui_MainWindow(object):
         if MainWindow.objectName():
             MainWindow.setObjectName(u"Image filter")
         form_height = variables.IMAGE_SIZE + 60
-        form_width = variables.IMAGE_SIZE * 3 + 40
+        form_width = variables.IMAGE_SIZE * 2 + 40
         MainWindow.resize(form_width, form_height)
         MainWindow.setMinimumSize(QSize(form_width, form_height))
         MainWindow.setMaximumSize(QSize(form_width, form_height))
@@ -30,7 +30,7 @@ class Ui_MainWindow(object):
         self.b_open.setText("Открыть изображение")
 
         self.cb_filter = QComboBox(self.centralwidget)
-        self.cb_filter.setGeometry(QRect(form_width - 350, 11, 150, 28))
+        self.cb_filter.setGeometry(QRect(form_width - 400, 11, 200, 28))
         for i in range(len(variables.FILTERS)):
             self.cb_filter.addItem(variables.FILTERS[i].name)
 
@@ -44,9 +44,6 @@ class Ui_MainWindow(object):
 
         self.label2 = QLabel(MainWindow)
         self.label2.setGeometry(QRect(variables.IMAGE_SIZE + 20, 50, variables.IMAGE_SIZE, variables.IMAGE_SIZE))
-
-        self.label3 = QLabel(MainWindow)
-        self.label3.setGeometry(QRect(variables.IMAGE_SIZE * 2 + 30, 50, variables.IMAGE_SIZE, variables.IMAGE_SIZE))
 
         self.retranslateUi(MainWindow)
 

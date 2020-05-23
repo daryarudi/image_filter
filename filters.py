@@ -6,6 +6,7 @@ import numpy as np
 class filters:
     def __init__(self, array):
         self.array = array
+        self.fur_arr = self.fur()
 
     def BW_filter(self):
         arr = self.array.copy()
@@ -26,23 +27,88 @@ class filters:
                 arr[i][j][2] = 255 - arr[i][j][2]
         return arr
 
-    def IDL_filter(self, w, d0):
-        arr = self.FUR_filter()
-        arr_new = arr.copy()
+# идеальный фильтр низкочастотный
+    def INF_filter(self, w, d0):
         matrix = []
-        for i in range(0, len(arr)):
+        for i in range(0, len(self.fur_arr)):
             row = []
-            for j in range(0, len(arr[0])):
-                tmp = math.sqrt((i - len(arr) / 2) ** 2 + (j - len(arr[0]) / 2) ** 2)
+            for j in range(0, len(self.fur_arr[0])):
+                tmp = self.D(i,j)
                 if (tmp < d0) or (tmp > (d0 + w)):
                     row.append(1)
                 else:
                     row.append(0)
             matrix.append(row)
-        for i in range(0, len(arr)):
-            for j in range(0, len(arr[0])):
-                arr_new[i][j] = arr[i][j] * matrix[i][j]
-        return self.FUR_unfilter(arr_new)
+        return self.un_fur(self.filter(matrix))
+
+# идеальный фильтр высокочастотный
+    def IVF_filter(self, w, d0):
+        matrix = []
+        for i in range(0, len(self.fur_arr)):
+            row = []
+            for j in range(0, len(self.fur_arr[0])):
+                tmp = self.D(i,j)
+                if (tmp < d0) or (tmp > (d0 + w)):
+                    row.append(0)
+                else:
+                    row.append(1)
+            matrix.append(row)
+        return self.un_fur(self.filter(matrix))
+
+# фильтр Баттерворта низкочастотный
+    def BNF_filter(self, n, d0):
+        matrix = []
+        for i in range(0, len(self.fur_arr)):
+            row = []
+            for j in range(0, len(self.fur_arr[0])):
+                row.append(1 / (1 + (self.D(i,j) / d0)**(2 * n)))
+            matrix.append(row)
+        return self.un_fur(self.filter(matrix))
+
+# фильтр Баттерворта высокочастотный
+    def BVF_filter(self, n, d0):
+        matrix = []
+        for i in range(0, len(self.fur_arr)):
+            row = []
+            for j in range(0, len(self.fur_arr[0])):
+                d = self.D(i,j)
+                if (d == 0):
+                    row.append(0)
+                else:
+                    row.append(1 / (1 + (d0 / d)**(2 * n)))
+            matrix.append(row)
+        return self.un_fur(self.filter(matrix))
+
+# фильтр Гаусса низкочастотный
+    def GNF_filter(self, d0):
+        matrix = []
+        for i in range(0, len(self.fur_arr)):
+            row = []
+            for j in range(0, len(self.fur_arr[0])):
+                row.append(math.exp((-1 * self.D(i, j) ** 2) / (2 * d0 ** 2)))
+            matrix.append(row)
+        return self.un_fur(self.filter(matrix))
+
+# фильтр Гаусса высокочастотный
+    def GVF_filter(self, d0):
+        matrix = []
+        for i in range(0, len(self.fur_arr)):
+            row = []
+            for j in range(0, len(self.fur_arr[0])):
+                row.append(1 - math.exp((-1 * self.D(i, j) ** 2) / (2 * d0 ** 2)))
+            matrix.append(row)
+        return self.un_fur(self.filter(matrix))
+
+# вспомогательные методы
+    def D(self, u, v):
+        return math.sqrt((u - len(self.fur_arr) / 2) ** 2 + (v - len(self.fur_arr[0]) / 2) ** 2)
+
+    def filter(self, matrix):
+        arr_new = self.fur_arr.copy()
+        for i in range(0, len(self.fur_arr)):
+            for j in range(0, len(self.fur_arr[0])):
+                arr_new[i][j] = self.fur_arr[i][j] * matrix[i][j]
+        return arr_new
 
     def shift(self, arr):
         arr_new = []
@@ -69,12 +135,14 @@ class filters:
                 value = int(math.sqrt(arr[i][j].real**2+arr[i][j].imag**2))#int(arr[i][j].real)#
                 if (value > 255):
                     value = 255
+                if (value < 0):
+                    value = 0
                 arr_new[i][j][0] = value
                 arr_new[i][j][1] = arr_new[i][j][0]
                 arr_new[i][j][2] = arr_new[i][j][0]
         return arr_new
 
-    def FUR_filter(self):
+    def fur(self):
         self.array = self.BW_filter()
         n = len(self.array)
         m = len(self.array[0])
@@ -103,7 +171,7 @@ class filters:
 #        res = self.float_to_pix(arr2)
         return arr2
 
-    def FUR_unfilter(self, arr0):
+    def un_fur(self, arr0):
         n = len(arr0)
         m = len(arr0[0])
         arr1 = []

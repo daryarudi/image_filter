@@ -33,11 +33,17 @@ class image:
         return QPixmap(self.way)
 
     def filter(self, filter_name):
-        filter = filters(self.to_rgb_array())
-        if (filter_name == "BW"):
-            new_arr = filter.BW_filter()
-        if (filter_name == "NEG"):
-            new_arr = filter.NEG_filter()
-        if (filter_name == "IDL"):
-            new_arr = filter.IDL_filter(d0=30, w=11)
+        self.f = filters(self.to_rgb_array())
+        if (filter_name == "INF"):
+            new_arr = self.f.INF_filter(w = 10, d0 = 30)
+        if (filter_name == "IVF"):
+            new_arr = self.f.IVF_filter(w = 10, d0 = 30)
+        if (filter_name == "BNF"):
+            new_arr = self.f.BNF_filter(n = 1, d0 = 30)
+        if (filter_name == "BVF"):
+            new_arr = self.f.BVF_filter(n = 1, d0 = 30)
+        if (filter_name == "GNF"):
+            new_arr = self.f.GNF_filter(d0 = 30)
+        if (filter_name == "GVF"):
+            new_arr = self.f.GVF_filter(d0 = 30)
         return self.array_to_image(new_arr)
