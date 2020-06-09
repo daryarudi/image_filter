@@ -38,7 +38,6 @@ class Ui_MainWindow(object):
         self.b_filter.setGeometry(QRect(form_width - 190, 10, 180, 30))
         self.b_filter.setText("Применить фильтр")
 
-        # test
         self.label1 = QLabel(MainWindow)
         self.label1.setGeometry(QRect(10, 50, variables.IMAGE_SIZE, variables.IMAGE_SIZE))
 

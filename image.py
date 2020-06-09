@@ -18,9 +18,9 @@ class image:
         img_copy = self.im.copy()
         return np.asarray(img_copy, dtype='uint8')
 
-    def array_to_image(self, arr):
+    def array_to_image(self, arr, f):
         im = Image.fromarray(arr)
-        way = self.dir + self.unique_name()
+        way = self.dir + f + self.unique_name()
         im.save(way)
         return image(way)
 
@@ -35,15 +35,15 @@ class image:
     def filter(self, filter_name):
         self.f = filters(self.to_rgb_array())
         if (filter_name == "INF"):
-            new_arr = self.f.INF_filter(w = 10, d0 = 30)
+            new_arr = self.f.INF_filter(w = 40, d0 = 50)
         if (filter_name == "IVF"):
-            new_arr = self.f.IVF_filter(w = 10, d0 = 30)
+            new_arr = self.f.IVF_filter(w = 40, d0 = 50)
         if (filter_name == "BNF"):
-            new_arr = self.f.BNF_filter(n = 1, d0 = 30)
+            new_arr = self.f.BNF_filter(n = 1, d0 = 100)
         if (filter_name == "BVF"):
-            new_arr = self.f.BVF_filter(n = 1, d0 = 30)
+            new_arr = self.f.BVF_filter(n = 1, d0 = 10)
         if (filter_name == "GNF"):
             new_arr = self.f.GNF_filter(d0 = 30)
         if (filter_name == "GVF"):
             new_arr = self.f.GVF_filter(d0 = 30)
-        return self.array_to_image(new_arr)
+        return self.array_to_image(new_arr, filter_name)

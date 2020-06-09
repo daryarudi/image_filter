@@ -124,7 +124,6 @@ class filters:
         return arr_new
 
     def fur(self):
-        self.array = self.BW_filter()
         n = len(self.array)
         m = len(self.array[0])
 
@@ -149,7 +148,6 @@ class filters:
                 for k in range(0, n):
                     tmp = tmp + arr1[k][i] * (math.cos((2 * math.pi * j * k) / m) + 1j * math.sin((2 * math.pi * j * k) / m))
                 arr2[j].append(tmp)
-#        res = self.float_to_pix(arr2)
         return arr2
 
     def un_fur(self, arr0):

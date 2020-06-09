@@ -17,12 +17,23 @@ class main:
 
     def b_open_clicked(self):
         filename = QFileDialog.getOpenFileName(caption="Открыть изображение", filter="Файлы изображений (*.jpg)")
-        self.im = image(filename[0])
-        self.output_image(self.im, 1)
+        if filename != ('', ''):
+            self.im = image(filename[0])
+            self.output_image(self.im, 1)
 
     def b_filter_clicked(self):
-        im2 = self.im.filter(self.v.get_filter_code(name = self.ui.cb_filter.currentText()))
-        self.output_image(im2, 2)
+        if (self.im == None):
+            QMessageBox.critical(QWidget(), 'Ошибка', "Изображение для обработки не выбрано")
+            return
+        im2 = self.im.filter(self.v.get_filter_code(name=self.ui.cb_filter.currentText()))
+
+        im2 = self.im.filter("INF")
+        im2 = self.im.filter("IVF")
+        im2 = self.im.filter("BNF")
+        im2 = self.im.filter("BVF")
+        im2 = self.im.filter("GNF")
+        im2 = self.im.filter("GVF")
+        #self.output_image(im2, 2)
 
     def output_image(self, im, num):
         if (num == 1):

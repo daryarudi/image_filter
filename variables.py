@@ -20,8 +20,7 @@ class variables:
     FILTERS.append(FILTER("BVF", "Баттерворта высокочастотный"))
     FILTERS.append(FILTER("GNF", "Гаусса низкочастотный"))
     FILTERS.append(FILTER("GVF", "Гаусса высокочастотный"))
-#    FILTERS.append(FILTER("BW","Черно-белый"))
-#    FILTERS.append(FILTER("NEG","Негатив"))
+
 
     def get_filter_code(self, name):
         for i in range(0, len(self.FILTERS)):
